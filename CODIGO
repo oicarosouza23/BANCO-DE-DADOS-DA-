@@ -1,0 +1,128 @@
+
+
+CREATE TABLE Cursos (
+  id_curso INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  duracao INT NOT NULL
+);
+
+
+CREATE TABLE Disciplinas (
+  id_disciplina INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL,
+  id_departamento INT NOT NULL,
+  cod_disciplina VARCHAR(10) NOT NULL UNIQUE,
+  obrigatoria ENUM('sim', 'nao') NOT NULL,
+  carga_horaria INT NOT NULL,
+  FOREIGN KEY (id_departamento) REFERENCES Departamentos(id_departamento)
+);
+
+
+CREATE TABLE Departamentos (
+  id_departamento INT PRIMARY KEY AUTO_INCREMENT,
+  nome VARCHAR(100) NOT NULL
+);
+
+
+CREATE TABLE Turmas (
+  id_turma INT PRIMARY KEY AUTO_INCREMENT,
+  id_disciplina INT NOT NULL,
+  ano_letivo INT NOT NULL,
+  semestre INT NOT NULL,
+  capacidade INT NOT NULL,
+  FOREIGN KEY (id_disciplina) REFERENCES Disciplinas(id_disciplina)
+);
+
+
+CREATE TABLE Alunos (
+  id_aluno INT PRIMARY KEY AUTO_INCREMENT,
+  RA VARCHAR(10) NOT NULL UNIQUE,
+  nome VARCHAR(100) NOT NULL,
+  id_curso INT NOT NULL,
+  data_nascimento DATE,
+  endereco VARCHAR(100),
+  telefone VARCHAR(20),
+  situacao_matricula ENUM('ativo', 'trancado') NOT NULL,
+  FOREIGN KEY (id_curso) REFERENCES Cursos(id_curso)
+);
+
+CREATE TABLE Alunos_Turmas (
+  id_aluno_turma INT PRIMARY KEY AUTO_INCREMENT,
+  id_aluno INT NOT NULL,
+  id_turma INT NOT NULL,
+  nota_final DECIMAL(2,1),
+  frequencia INT,
+  reprovacao INT,
+  FOREIGN KEY (id_aluno) REFERENCES Alunos(id_aluno),
+  FOREIGN KEY (id_turma) REFERENCES Turmas(id_turma)
+);
+
+
+CREATE TABLE Professores (
+  id_professor INT PRIMARY KEY AUTO_INCREMENT,
+  cod_professor VARCHAR(10) NOT NULL UNIQUE,
+  nome VARCHAR(100) NOT NULL,
+  email VARCHAR(100),
+  id_departamento INT NOT NULL,
+  FOREIGN KEY (id_departamento) REFERENCES Departamentos(id_departamento)
+);
+
+
+CREATE TABLE Professores_Disciplinas (
+  id_professor_disciplina INT PRIMARY KEY AUTO_INCREMENT,
+  id_professor INT NOT NULL,
+  id_disciplina INT NOT NULL,
+  FOREIGN KEY (id_professor) REFERENCES Professores(id_professor),
+  FOREIGN KEY (id_disciplina) REFERENCES Disciplinas(id_disciplina)
+);
+
+
+INSERT INTO Cursos (nome, duracao)
+VALUES ('Ciência da Computação', 4),
+       ('Engenharia Civil', 5),
+       ('Direito', 5);
+
+
+INSERT INTO Departamentos (nome)
+VALUES ('Computação'),
+       ('Engenharia'),
+       ('Direito');
+
+
+INSERT INTO Disciplinas (nome, id_departamento, cod_disciplina, obrigatoria, carga_horaria)
+VALUES ('Programação Orientada a Objetos', 1, 'COMP101', 'sim', 80),
+       ('Cálculo I', 2, 'ENG120', 'sim', 60),
+       ('Direito Constitucional', 3, 'DIR200', 'sim', 75);
+
+
+INSERT INTO Professores (nome, email, id_departamento)
+VALUES ('Dr. João Silva', 'joao.silva@faculdade.com', 1),
+       ('Dra. Maria Souza', 'maria.souza@faculdade.com', 2),
+       ('Dr. Carlos Santos', 'carlos.santos@faculdade.com', 3);
+
+
+INSERT INTO Alunos (RA, nome, id_curso, data_nascimento)
+VALUES ('123456', 'Alice Silva', 1, '2000-01-01'),
+       ('654321', 'Bruno Oliveira', 2, '1998-07-15'),
+       ('789012', 'Camila Santos', 3, '2001-12-24');
+
+
+INSERT INTO Turmas (id_disciplina, ano_letivo, semestre, capacidade)
+VALUES (1, 2024, 1, 30),
+       (2, 2024, 1, 30),
+       (3, 2024, 1, 30);
+
+
+INSERT INTO Professores_Disciplinas (id_professor, id_disciplina)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3);
+
+
+INSERT INTO Alunos_Turmas (id_aluno, id_turma)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3);
+
+
+
